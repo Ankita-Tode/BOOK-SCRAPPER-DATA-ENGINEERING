@@ -11,38 +11,50 @@ This project demonstrates a **B2B-style data pipeline** that:
 
 **Source:** Books to Scrape (demo scraping site)
 
-## 🏗️ Project Architecture
+🏗️ Project Architecture
+The system is designed as a modular ETL (Extract, Transform, Load) pipeline, serving data through a modern API.
 
-- Scraper (scraper.py)
-- Data Cleaning (cleaning.py)
-- Database (db.py)
-- API (fastapi.py)
-- Automation (Cron Job)
+🕵️ Scraper (scraper.py)
+
+Responsible for navigating target websites and extracting raw book data.
+
+Outputs: raw_books.csv.
+
+🧹 Data Cleaning (clean_data.py)
+
+Handles data validation, removing duplicates, and formatting prices/ratings.
+
+Outputs: cleaned_books.csv.
+
+🗄️ Database (database.py)
+
+Manages the SQLite connection and schema.
+
+Handles the "Load" phase, persisting cleaned data into books.db.
+
+🚀 API (fastapi.py)
+
+A RESTful interface built with FastAPI to serve the stored book data to external users or front-end applications.
 
 
-## 📁 Project Structure
+## Project Structure
 
-```
-project/
-│
-├── scraper/
-│   └── scraper.py        # Scrapes data from website
-│
-├── pipeline/
-│   ├── cleaning.py       # Data preprocessing and cleaning
-│   └── pipeline.py       # Pipeline orchestration
-│
-├── database/
-│   └── db.py             # Database connection & insertion
-│
-├── api/
-│   └── fastapi.py        # API endpoints (/jobs)
-│
-├── logs/
-│   └── pipeline.log      # Execution logs
-│
-├── requirements.txt      # Dependencies
-└── README.md             # Documentation
+```text
+bookscrapper/
+├── book_pipeline/
+│   ├── venv/                   # Virtual environment
+│   ├── books.db                # SQLite database
+│   ├── check_db.py             # Script to verify database entries
+│   ├── clean_data.py           # Data cleaning logic
+│   ├── cleaned_books.csv       # Processed data output
+│   ├── database.py             # Database connection/schema setup
+│   ├── main.py                 # Main entry point
+│   ├── pipeline.py             # Orchestrates the ETL process
+│   ├── raw_books.csv           # Raw scraped data
+│   ├── requirements.txt        # Project dependencies
+│   ├── runtime.txt             # Python runtime specification
+│   └── scraper.py              # Web scraping logic
+└── External Libraries/         # Python 3.12 interpreter files
 ```
 
 # **🛠 Tech Stack**
@@ -50,9 +62,9 @@ project/
 - **Scraping:** Python, Requests, BeautifulSoup  
 - **Data Cleaning:** Pandas, NumPy  
 - **Database:** Sqlite 
-- **API:** FastAPI, psycopg2  
+- **API:** FastAPI
 - **Automation:** Cron Jobs  
-- **Deployment:** Local machine, optionally Render / Railway / Replit  
+- **Deployment:** Local machine,  Replit  
 
 # **⚡ Setup Instructions**
 
@@ -89,19 +101,9 @@ Start the FastAPI server:
 uvicorn api.fastapi:app --reload
 
 Access the data:
-GET http://127.0.0.1:8000/jobs
+GET http://127.0.0.1:8000/
 
-⏰ Automation with Cron
 
-Run the pipeline automatically every day at 2 AM:
-
-Open the crontab editor:
-crontab -e
-
-Add the following entry:
-0 2 * * * /usr/bin/python3 /path/to/project/pipeline/pipeline.py >> /path/to/project/logs/pipeline.log 2>&1
-Adjust /usr/bin/python3 and paths according to your system
-Logs are saved to pipeline.log
 
 ✅ Notes / Best Practices
 Handle missing or inconsistent data carefully
